@@ -76,9 +76,27 @@ def n_post(request):
         return JsonResponse({"error": "POST request required."}, status=400)
     data = json.loads(request.body)
     post = data.get("text", "")
+    if post == "":
+        return JsonResponse({
+            "error": "There is nothing to post."
+        }, status=400)
     new_post = Post(
         user = request.user,
         text = post
     )
     new_post.save()
     return JsonResponse({"message": "Posted successfully."}, status=201)
+
+def d_post(request):
+    posts = Post.objects.all().order_by("-timestamp")
+    if request.user:
+        a_user = request.user
+    else:
+        a_user = 'no_one'
+    return JsonResponse([post.serialize() for post in posts], safe=False)
+
+def a_user(request):
+    au_user = str(request.user)
+    print(au_user)
+        
+    return JsonResponse({"au_user": au_user}, status=201)

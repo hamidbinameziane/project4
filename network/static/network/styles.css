@@ -1,4 +1,23 @@
-#success {
+#new_post > div {
+    width:auto;
+    height:fit-content;
+    padding: 1rem;
+    margin: 1rem;
+}
+
+#d_post > div {
+    width:auto;
+    height:fit-content;
+    padding: 1rem;
+    margin: 1rem;
+}
+
+#d_post > div > p {
+    word-wrap: break-word;
+    height: fit-content;
+}
+
+.alert {
     display: none;
     width: fit-content;
 }

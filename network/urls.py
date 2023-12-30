@@ -11,4 +11,6 @@ urlpatterns = [
     
     #API Routes
     path("posts", views.n_post, name="n_post"),
+    path("d_posts", views.d_post, name="d_post"),
+    path("a_user", views.a_user, name="a_user"),
 ]
