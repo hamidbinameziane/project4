@@ -56,7 +56,11 @@ function all_posts() {
     
       
   all_posts()
-  document.querySelector('#post-form').onsubmit = new_post;
+  document.querySelector('#post-form').onsubmit = function() {
+    new_post()
+    return false
+    
+  };
       
   })
   
@@ -70,28 +74,7 @@ function all_posts() {
           })
         })
         .then(response => response.json())
-        .then(result => {
-          if (result.message) {
-  
-            document.querySelector('#success').style.display = 'block';
-            document.querySelector('#success').innerHTML = result.message
-            console.log(result.message);
-            return false
-          }
-          else if (result.error) {
-            document.querySelector('#warning').style.display = 'block';
-            document.querySelector('#warning').innerHTML = result.error
-            console.log(result.error);
-            return false
-          }
-  
-  
-        });
-       
-  
-        
-        /*setTimeout(() => {
-          return false
-        }, 5000)
-        */
+        document.querySelector('#d_post').innerHTML = ""
+        tx.value = "";
+        all_posts();
   }
