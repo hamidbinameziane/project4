@@ -1,0 +1,18 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div style="padding: 1rem;">
+  <h1>Following</h1>
+    <hr>  
+</div>
+    
+    {% if user.is_authenticated %}
+    <div id="d_post">
+    </div>
+    {% endif %}
+    
+{% endblock %}
+{% block script %}
+    <script src="{% static 'network/following_p.js' %}"></script>
+{% endblock %}

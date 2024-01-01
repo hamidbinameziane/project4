@@ -56,25 +56,24 @@ function all_posts() {
     
       
   all_posts()
-  document.querySelector('#post-form').onsubmit = function() {
+  document.querySelector('#post-form').onsubmit = function(){
     new_post()
     return false
-    
   };
       
   })
   
   
   function new_post() {
-      tx = document.querySelector('#post-body');
-      fetch('/posts', {
-          method: 'POST',
-          body: JSON.stringify({
-              text: tx.value
-          })
+    tx = document.querySelector('#post-body');
+    fetch('/posts', {
+        method: 'POST',
+        body: JSON.stringify({
+            text: tx.value
         })
-        .then(response => response.json())
-        document.querySelector('#d_post').innerHTML = ""
-        tx.value = "";
-        all_posts();
-  }
+      })
+      .then(response => response.json())
+      document.querySelector('#d_post').innerHTML = ""
+      tx.value = "";
+      all_posts();
+}

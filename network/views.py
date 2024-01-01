@@ -89,10 +89,6 @@ def n_post(request):
 
 def d_post(request):
     posts = Post.objects.all().order_by("-timestamp")
-    if request.user:
-        a_user = request.user
-    else:
-        a_user = 'no_one'
     return JsonResponse([post.serialize() for post in posts], safe=False)
 
 def a_user(request):
@@ -147,3 +143,16 @@ def is_following(request, username):
                     "follower_c": follower_c,
                     "following_c": following_c
                     } , status=201)
+    
+@login_required
+def following_p(request):
+    return render(request, "network/following_p.html")
+
+@login_required
+def f_posts(request):
+    f = []
+    flwg = Follow.objects.filter(follower__username=request.user)
+    for flw in flwg:
+        f.append(flw.followed)
+    posts = Post.objects.filter(user__in=f).order_by("-timestamp")
+    return JsonResponse([post.serialize() for post in posts], safe=False)
