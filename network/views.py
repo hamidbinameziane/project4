@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Post
+from .models import User, Post, Follow
 
 import json
 from django.http import JsonResponse
@@ -97,6 +97,53 @@ def d_post(request):
 
 def a_user(request):
     au_user = str(request.user)
-    print(au_user)
         
     return JsonResponse({"au_user": au_user}, status=201)
+
+def profile(request, username):
+    follower_c = Follow.objects.filter(followed__username=username).count()
+    following_c = Follow.objects.filter(follower__username=username).count()
+    print(following_c)
+    return render(request, "network/profile.html", {
+        "follower": follower_c,
+        "following": following_c,
+        "p_name": username,
+    })
+@csrf_exempt  
+@login_required
+def p_follow(request):
+    
+    data = json.loads(request.body)
+    flrs = Follow.objects.filter(followed__username=data["followed"])
+    for i in flrs:
+        if request.user == i.follower:
+            f = Follow.objects.get(followed__username=data["followed"], follower__username=request.user)
+            f.delete()
+            return HttpResponse(status=204)
+    fld = User.objects.get(username=data["followed"])
+    new_f = Follow(
+       followed=  fld,
+       follower = request.user
+    )
+    new_f.save()
+    return HttpResponse(status=204)
+
+@login_required
+def is_following(request, username):
+    follower_c = Follow.objects.filter(followed__username=username).count()
+    following_c = Follow.objects.filter(follower__username=username).count()
+    flrs = Follow.objects.filter(followed__username=username)
+    for i in flrs:
+        if request.user == i.follower:
+            stat = 'Following'
+            return JsonResponse({
+                    "stat": stat,
+                    "follower_c": follower_c,
+                    "following_c": following_c
+                    } , safe=False)
+    stat = 'Follow' 
+    return JsonResponse({
+                    "stat": stat,
+                    "follower_c": follower_c,
+                    "following_c": following_c
+                    } , status=201)

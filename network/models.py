@@ -18,3 +18,14 @@ class Post(models.Model):
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
             "like": self.like,
         }
+        
+class Follow(models.Model):
+    followed = models.ForeignKey("User", on_delete=models.CASCADE, related_name = "follow")
+    follower = models.ForeignKey("User", on_delete=models.CASCADE, related_name = "follower")
+    def serialize(self):
+        return {
+            "id": self.id,
+            "followed": self.user.username,
+            "follower": self.user.username,
+        }
+    

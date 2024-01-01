@@ -1,0 +1,22 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div style="padding: 1rem;">
+  <h1>{{p_name}}</h1>
+  {% if user.is_authenticated and user.username != p_name %}
+    <button type="button" class="btn btn-primary" id="follow">Follow</button> 
+    <button type="button" class="btn btn-secondary" id="following">Following</button>    
+    {% endif %}
+    <div style="padding-top: 1rem;">
+    <span style="font-weight: bold;" id="fg_c">{{following}}</span><span style="margin-right: 10px;">Following</span>
+    <span style="font-weight: bold;" id="fr_c">{{follower}}</span><span>Followers</span>
+</div>
+    <hr>  
+</div>   
+    <div id="d_post">
+    </div>
+{% endblock %}
+{% block script %}
+    <script src="{% static 'network/profile.js' %}"></script>
+{% endblock %}

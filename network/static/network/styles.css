@@ -1,11 +1,11 @@
-#new_post > div {
+#new_post > div, #d_post > div {
     width:auto;
     height:fit-content;
     padding: 1rem;
     margin: 1rem;
 }
 
-#d_post > div {
+#f_count {
     width:auto;
     height:fit-content;
     padding: 1rem;
@@ -20,4 +20,12 @@
 .alert {
     display: none;
     width: fit-content;
+    
+}
+
+#follow, #following {
+    width: 100px;
+    height: fit-content;
+    border-radius: 5px 25px;
+    display: none;
 }
