@@ -1,4 +1,91 @@
-function all_posts() {
+function pagination() {
+  
+  fetch('/d_posts?q=count')
+  .then(response => response.json())
+  .then(count => {
+     //console.log(count.count)
+     if (count.count <= 10) {
+      q = '/d_posts?q=all'
+      all_posts(q)
+     }
+     else {
+      all_posts('/d_posts?q=1')
+      const a_f = document.createElement('a');
+      const a_l = document.createElement('a');
+      var last_p = 1
+        var p_count = 0
+      var r = count.count % 10;
+      if (r == 0) {p_count = count.count / 10;}
+      else {p_count = 1 + ((count.count - r)/ 10);}
+      document.querySelector('#pg').innerHTML = `Current page: ${last_p} / ${p_count}`
+      document.querySelector('#prev').className = 'page-item disabled'
+      document.querySelector('#next').className = 'page-item'
+      a_f.className = 'page-link'
+      a_f.innerHTML = 'Previous'
+      a_f.addEventListener('click', function() {
+          
+
+          last_p--
+          document.querySelector('#pg').innerHTML = `Current page: ${last_p} / ${p_count}`
+         document.querySelector('#d_post').innerHTML = ""
+         q = `/d_posts?q=${last_p}`
+
+         if (last_p != 1) {
+          document.querySelector('#prev').className = 'page-item' 
+              }
+          else {
+            document.querySelector('#prev').className = 'page-item disabled'
+          }
+          if (last_p == p_count) {
+            document.querySelector('#next').className = 'page-item disabled' 
+      }
+  else {
+    document.querySelector('#next').className = 'page-item'
+  }
+          all_posts(q)
+      })  
+      document.querySelector('#prev').append(a_f)
+
+
+      
+
+    
+      a_l.className = 'page-link'
+      a_l.innerHTML = 'Next'
+      a_l.addEventListener('click', function() {
+          
+
+          last_p++
+          document.querySelector('#pg').innerHTML = `Current page: ${last_p} / ${p_count}`
+         
+         document.querySelector('#d_post').innerHTML = ""
+         q = `/d_posts?q=${last_p}`
+
+         if (last_p != 1) {
+          document.querySelector('#prev').className = 'page-item' 
+              }
+          else {
+            document.querySelector('#prev').className = 'page-item disabled'
+          }
+          if (last_p == p_count) {
+            document.querySelector('#next').className = 'page-item disabled' 
+      }
+  else {
+    document.querySelector('#next').className = 'page-item'
+  }
+          all_posts(q)
+      })  
+      document.querySelector('#next').append(a_l)
+
+
+
+
+    
+     }
+  }) 
+}
+
+function all_posts(q) {
     var aut_user = ''
     fetch('/a_user')
     .then(response => response.json())
@@ -6,7 +93,7 @@ function all_posts() {
       
         aut_user = au_user.au_user
     })
-    fetch('/d_posts')
+    fetch(q)
     .then(response => response.json())
     .then(posts => {
     posts.forEach(element => {
@@ -55,11 +142,18 @@ function all_posts() {
   document.addEventListener('DOMContentLoaded', function() {
     
       
-  all_posts()
-  document.querySelector('#post-form').onsubmit = function(){
+    pagination()
+    fetch('/a_user')
+    .then(response => response.json())
+    .then(au_user => {
+      if (au_user.au_user != 'not_aut') {
+      document.querySelector('#post-form').onsubmit = function(){
     new_post()
     return false
   };
+}
+    })
+  
       
   })
   
@@ -75,5 +169,10 @@ function all_posts() {
       .then(response => response.json())
       document.querySelector('#d_post').innerHTML = ""
       tx.value = "";
-      all_posts();
+      setTimeout(() => {
+        document.querySelector('#prev').innerHTML = ""
+        document.querySelector('#next').innerHTML = ""
+        pagination();
+      }, 50)
+     
 }

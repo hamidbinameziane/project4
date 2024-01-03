@@ -11,6 +11,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
+from django.core.paginator import Paginator
+
 
 def index(request):
     return render(request, "network/index.html")
@@ -87,12 +89,13 @@ def n_post(request):
     new_post.save()
     return JsonResponse({"message": "Posted successfully."}, status=201)
 
-def d_post(request):
-    posts = Post.objects.all().order_by("-timestamp")
-    return JsonResponse([post.serialize() for post in posts], safe=False)
-
 def a_user(request):
-    au_user = str(request.user)
+    if request.user.is_authenticated:
+        au_user = str(request.user)
+            
+        
+    else:
+        au_user = 'not_aut'
         
     return JsonResponse({"au_user": au_user}, status=201)
 
@@ -143,10 +146,38 @@ def is_following(request, username):
                     "follower_c": follower_c,
                     "following_c": following_c
                     } , status=201)
-    
+        
 @login_required
 def following_p(request):
     return render(request, "network/following_p.html")
+
+def d_post(request):
+    posts = Post.objects.all().order_by("-timestamp")
+    
+    qry = request.GET.get("q")
+    p_name = request.GET.get("n")
+    prof = request.GET.get("p")
+    p_p = Post.objects.filter(user__username=p_name)
+    if qry == 'count':
+        c = posts.count()
+        return JsonResponse({"count": c}, status=201)
+    elif qry == 'count_p':
+        p_c = p_p.count()
+        return JsonResponse({"count": p_c}, status=201)
+    elif qry == 'all':
+        return JsonResponse([post.serialize() for post in posts], safe=False)
+    elif qry == 'all_p':
+        return JsonResponse([post.serialize() for post in p_p], safe=False)
+    elif prof == 'p':
+        paginator = Paginator(p_p, 10)
+        p_po = paginator.get_page(int(qry))
+        return JsonResponse([post.serialize() for post in p_po], safe=False)
+    
+    else:
+        paginator = Paginator(posts, 10)
+        posts_p = paginator.get_page(int(qry))
+        return JsonResponse([post.serialize() for post in posts_p], safe=False)
+
 
 @login_required
 def f_posts(request):
@@ -155,4 +186,13 @@ def f_posts(request):
     for flw in flwg:
         f.append(flw.followed)
     posts = Post.objects.filter(user__in=f).order_by("-timestamp")
-    return JsonResponse([post.serialize() for post in posts], safe=False)
+    qry = request.GET.get("q")
+    if qry == 'count':
+        c = posts.count()
+        return JsonResponse({"count": c}, status=201)
+    elif qry == 'all':
+        return JsonResponse([post.serialize() for post in posts], safe=False)
+    else:
+        paginator = Paginator(posts, 10)
+        posts_p = paginator.get_page(int(qry))
+        return JsonResponse([post.serialize() for post in posts_p], safe=False)
