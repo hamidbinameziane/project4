@@ -15,6 +15,24 @@
 #d_post > div > p {
     word-wrap: break-word;
     height: fit-content;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+#d_post > div > p > form > textarea {
+    word-wrap: break-word;
+    height: fit-content;
+    min-height: 100px;
+
+    margin: 0;
+    padding: 0;
+}
+
+#d_post > div > p > form > input {
+    padding: 2px;
+    top: 0;
+    position: relative;
 }
 
 #follow, #following {

@@ -196,3 +196,19 @@ def f_posts(request):
         paginator = Paginator(posts, 10)
         posts_p = paginator.get_page(int(qry))
         return JsonResponse([post.serialize() for post in posts_p], safe=False)
+    
+@csrf_exempt  
+@login_required
+def e_post(request):
+    data = json.loads(request.body)
+    post_id = int(data.get("id", ""))
+    e_text = data.get("text", "")
+    try:
+        post = Post.objects.get(user=request.user, pk=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+    
+    post.text = e_text
+    post.save()
+    return HttpResponse(status=204)
+    

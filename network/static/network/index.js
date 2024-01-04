@@ -87,6 +87,8 @@ function pagination() {
 
 function all_posts(q) {
     var aut_user = ''
+    var is_textarea = false
+      var hist = {}
     fetch('/a_user')
     .then(response => response.json())
     .then(au_user => {
@@ -113,9 +115,80 @@ function all_posts(q) {
   
       const a = document.createElement('a');
       a.setAttribute('href', '');
+      a.setAttribute('class', 'link-primary');
+      a.style.fontWeight = 'bold'
       a.innerHTML = 'Edit'
-      a.addEventListener('click', function() {
-        console.log('i was clicked');
+      
+
+      a.addEventListener('click', function(event) {
+        if (is_textarea == true) {
+          document.getElementById(`a${hist['id']}`).style.display = "block"
+        document.getElementById('ta').remove()
+        document.getElementById(`${hist['id']}`).innerHTML = hist['in']
+        }
+        s_id = element.id
+        console.log(is_textarea)
+        console.log(s_id);
+      
+        const texedit = document.createElement('form');
+        const tex = document.createElement('textarea');
+        const tex_in = document.createElement('input');
+        const c_a = document.createElement('a');
+        c_a.setAttribute('href', '');
+        c_a.setAttribute('class', 'link-primary');
+        c_a.style.fontWeight = 'bold'
+        c_a.innerHTML = 'Cancel'
+        c_a.addEventListener('click', function(event) {
+          document.getElementById(`a${hist['id']}`).style.display = "block"
+          document.getElementById('ta').remove()
+          document.getElementById(`${hist['id']}`).innerHTML = hist['in']
+          is_textarea = false
+          event.preventDefault();
+        })
+        texedit.append(c_a)
+        texedit.setAttribute('id', 'ta');
+        tex.setAttribute('class', 'form-control');
+        tex.innerHTML = element.post
+        texedit.append(tex)
+        tex_in.setAttribute('type', 'submit');
+        tex_in.setAttribute('class', 'btn btn-primary');
+        tex_in.setAttribute('value', 'Save');
+        texedit.append(tex_in)
+        console.log(tex.innerHTML)
+        texedit.onsubmit = function(){
+        e_txt = tex.value
+
+          fetch('/e_post', {
+            method: 'POST',
+            body: JSON.stringify({
+                text: e_txt,
+                id: element.id
+            })
+          })
+          setTimeout(() => {
+           document.querySelector('#d_post').innerHTML = ""
+           all_posts(q)
+          }, 50)
+          return false;
+          
+        }
+
+        
+        a.setAttribute('id', `a${s_id}`);
+        a.style.display = "none"
+        p.setAttribute('id', `${s_id}`);
+        hist['id'] = s_id
+        hist['in'] = p.innerHTML
+        is_textarea = true
+        p.innerHTML = ""
+
+        p.append(texedit)
+        event.preventDefault();
+        
+      //  document.querySelector('#d_post').innerHTML = ""
+      //  document.querySelector('#prev').innerHTML = ""
+      //  document.querySelector('#next').innerHTML = ""
+      //  pagination()
       })
       div.append(a)
   
@@ -125,6 +198,7 @@ function all_posts(q) {
       div.append(p)
        
       p2.setAttribute('class', 'text-muted');
+      p2.style.marginTop = '30px'
       p2.innerHTML = element.timestamp
       div.append(p2)
       span.innerHTML = "&#10084;"
