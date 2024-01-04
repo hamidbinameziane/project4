@@ -92,6 +92,9 @@ function pagination() {
 
 
 function all_posts(q) {
+    fetch('/a_user')
+  .then(response => response.json())
+  .then(au_user => {
 
     
     fetch(q)
@@ -117,7 +120,41 @@ function all_posts(q) {
    p2.setAttribute('class', 'text-muted');
    p2.innerHTML = element.timestamp
    div.append(p2)
-   span.innerHTML = "&#10084;"
+   span.innerHTML = "thumb_up"
+      
+      
+   span.setAttribute('class', 'material-symbols-outlined');
+   
+
+   if(au_user != 'not_aut') {
+
+     fetch(`/like?q=${element.id}`)
+           .then(response => response.json())
+           .then(stat => {
+             if (stat.stat == 'liked') {
+             span.style.color = "#3B71CA"
+           }
+           else {
+             span.style.color = "gray"
+           }
+    
+
+     span.style.cursor = 'pointer'
+   span.addEventListener('click', function() {
+     fetch('/like', {
+       method: 'PUT',
+       body: JSON.stringify({
+           post_id: element.id
+       })
+     })
+     setTimeout(() => {
+       document.querySelector('#d_post').innerHTML = ""
+       all_posts(q)
+      }, 100)
+     //span.style.color = "#3B71CA"
+   })
+   })
+ }
    div.append(span)
    span2.innerHTML = element.like
    span2.style.padding = "5px"
@@ -129,7 +166,7 @@ function all_posts(q) {
    }
 )
    })  
-     
+    })  
 
  }
 

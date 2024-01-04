@@ -127,8 +127,6 @@ function all_posts(q) {
         document.getElementById(`${hist['id']}`).innerHTML = hist['in']
         }
         s_id = element.id
-        console.log(is_textarea)
-        console.log(s_id);
       
         const texedit = document.createElement('form');
         const tex = document.createElement('textarea');
@@ -201,14 +199,52 @@ function all_posts(q) {
       p2.style.marginTop = '30px'
       p2.innerHTML = element.timestamp
       div.append(p2)
-      span.innerHTML = "&#10084;"
+///////////////////
+console.log(aut_user);
+
+      span.innerHTML = "thumb_up"
+      
+      
+      span.setAttribute('class', 'material-symbols-outlined');
+      
+
+      if(aut_user != 'not_aut') {
+
+        fetch(`/like?q=${element.id}`)
+              .then(response => response.json())
+              .then(stat => {
+                if (stat.stat == 'liked') {
+                span.style.color = "#3B71CA"
+              }
+              else {
+                span.style.color = "gray"
+              }
+       
+
+        span.style.cursor = 'pointer'
+      span.addEventListener('click', function() {
+        fetch('/like', {
+          method: 'PUT',
+          body: JSON.stringify({
+              post_id: element.id
+          })
+        })
+        setTimeout(() => {
+          document.querySelector('#d_post').innerHTML = ""
+          all_posts(q)
+         }, 100)
+        //span.style.color = "#3B71CA"
+      })
+      })
+    }
+
       div.append(span)
       span2.innerHTML = element.like
       span2.style.padding = "5px"
       div.append(span2)
       div.setAttribute('class', 'form-control');
       document.querySelector('#d_post').append(div)
-      console.log(element);
+
     })
       })
     }

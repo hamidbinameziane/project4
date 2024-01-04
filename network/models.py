@@ -23,4 +23,8 @@ class Follow(models.Model):
     followed = models.ForeignKey("User", on_delete=models.CASCADE, related_name = "follow")
     follower = models.ForeignKey("User", on_delete=models.CASCADE, related_name = "follower")
 
+class Post_Like(models.Model):
+    post = models.ForeignKey("Post", on_delete=models.CASCADE)
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+
     

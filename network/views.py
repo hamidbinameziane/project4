@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Post, Follow
+from .models import User, Post, Follow, Post_Like
 
 import json
 from django.http import JsonResponse
@@ -150,14 +150,14 @@ def is_following(request, username):
 @login_required
 def following_p(request):
     return render(request, "network/following_p.html")
-
+####
 def d_post(request):
     posts = Post.objects.all().order_by("-timestamp")
     
     qry = request.GET.get("q")
     p_name = request.GET.get("n")
     prof = request.GET.get("p")
-    p_p = Post.objects.filter(user__username=p_name)
+    p_p = Post.objects.filter(user__username=p_name).order_by("-timestamp")
     if qry == 'count':
         c = posts.count()
         return JsonResponse({"count": c}, status=201)
@@ -204,11 +204,45 @@ def e_post(request):
     post_id = int(data.get("id", ""))
     e_text = data.get("text", "")
     try:
-        post = Post.objects.get(user=request.user, pk=post_id)
+        post = Post.objects.get(user=request.user, pk=post_id["post_id"])
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=404)
     
     post.text = e_text
     post.save()
     return HttpResponse(status=204)
+    
+@csrf_exempt
+@login_required
+def like(request):
+    
+    if request.method == "PUT":
+        post_id = json.loads(request.body)["post_id"]
+        l_count = Post.objects.get(pk=post_id)
+        l_c = l_count.like
+        print(l_c)
+        is_liked = Post_Like.objects.filter(user__username=request.user, post__id=post_id).exists()
+       
+        if is_liked == False:
+            p_l = Post.objects.get(pk=post_id)
+            like = Post_Like(post = p_l, user = request.user)
+            like.save()
+            
+            l_count.like = l_c + 1
+            l_count.save()
+            
+            return HttpResponse(status=204)
+        else:
+            Post_Like.objects.get(user__username=request.user, post__id=post_id).delete()
+            l_count.like = l_c - 1
+            l_count.save()
+            return HttpResponse(status=204)
+    else:
+        qry = int(request.GET.get("q"))
+        is_l = Post_Like.objects.filter(user__username=request.user, post__id=qry).exists()
+        if is_l == True:
+            stat = 'liked'
+        else:
+            stat = 'unliked'
+        return JsonResponse({"stat": stat}, status=201)
     
