@@ -1,5 +1,6 @@
 globalThis.flw = window.location.href.split("/").pop()
 
+
 function pagination() {
   
   fetch(`/d_posts?q=count_p&n=${flw}`)
@@ -88,11 +89,13 @@ function pagination() {
 }
 
 function all_posts(q) {
-  
+
+
 
   fetch('/a_user')
   .then(response => response.json())
   .then(au_user => {
+   
     var is_textarea = false
     var hist = {}
     console.log(flw)
@@ -249,6 +252,7 @@ function all_posts(q) {
 
       span.style.cursor = 'pointer'
     span.addEventListener('click', function() {
+      
       fetch('/like', {
         method: 'PUT',
         body: JSON.stringify({
@@ -301,9 +305,7 @@ function p_follow() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  document.querySelector('#prev').innerHTML = ""
-  document.querySelector('#next').innerHTML = ""
-  pagination()
+
 
 fetch('/a_user')
 .then(response => response.json())
