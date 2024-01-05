@@ -1,34 +1,33 @@
-{% extends "network/layout.html" %}
-{% load static %}
-
-{% block body %}
-<div style="padding: 1rem;">
+{% extends "network/layout.html" %} {% load static %} {% block body %}
+<div style="padding: 1rem">
   <h1>All Posts</h1>
-    <hr>  
+  <hr />
 </div>
-    
-    {% if user.is_authenticated %}
-    <div id="new_post">
-    <div class="form-control">
-        <form id="post-form">
-            <label for="post-body" class="form-label"><h4>New Post</h4></label>
-            <textarea class="form-control" id="post-body" required></textarea>
-            <input type="submit" class="btn btn-primary" value="Post"/>
-        </form>
-    </div>       
-    {% endif %}
-    <div id="d_post">
-    </div>
-    <nav aria-label="Search results pages" style="position: fixed;bottom: 0;right: 0;">
-        <ul class="pagination" id="pagination">
-        <li class="page-item disabled" id="prev"></li>
-        <li class="page-item" id="next"></li>
-        </ul>
-        <ul class="pagination">
-        <li class="page-item"><p class="page-link" id="pg"></p></li>
-            </ul>
-    </nav>
-{% endblock %}
-{% block script %}
-    <script src="{% static 'network/index.js' %}"></script>
-{% endblock %}
+
+{% if user.is_authenticated %}
+<div id="new_post">
+  <div class="form-control">
+    <form id="post-form">
+      <label for="post-body" class="form-label"><h4>New Post</h4></label>
+      <textarea class="form-control" id="post-body" required></textarea>
+      <input type="submit" class="btn btn-primary" value="Post" />
+    </form>
+  </div>
+  {% endif %}
+  <div id="d_post"></div>
+  <nav
+    aria-label="Search results pages"
+    style="position: fixed; bottom: 0; right: 0"
+  >
+    <ul class="pagination" id="pagination">
+      <li class="page-item disabled" id="prev"></li>
+      <li class="page-item" id="next"></li>
+    </ul>
+    <ul class="pagination">
+      <li class="page-item"><p class="page-link" id="pg"></p></li>
+    </ul>
+  </nav>
+  {% endblock %} {% block script %}
+  <script src="{% static 'network/index.js' %}"></script>
+  {% endblock %}
+</div>

@@ -202,9 +202,9 @@ def f_posts(request):
 def e_post(request):
     data = json.loads(request.body)
     post_id = int(data.get("id", ""))
-    e_text = data.get("text", "")
+    e_text = str(data.get("text", ""))
     try:
-        post = Post.objects.get(user=request.user, pk=post_id["post_id"])
+        post = Post.objects.get(user=request.user, pk=post_id)
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=404)
     

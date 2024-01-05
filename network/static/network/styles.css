@@ -1,64 +1,64 @@
-#new_post > div, #d_post > div {
-    width:auto;
-    height:fit-content;
-    padding: 1rem;
-    margin: 1rem;
+#new_post > div,
+#d_post > div {
+  width: auto;
+  height: fit-content;
+  padding: 1rem;
+  margin: 1rem;
 }
 
 #f_count {
-    width:auto;
-    height:fit-content;
-    padding: 1rem;
-    margin: 1rem;
+  width: auto;
+  height: fit-content;
+  padding: 1rem;
+  margin: 1rem;
 }
 
 #d_post > div > p {
-    word-wrap: break-word;
-    height: fit-content;
-    margin: 0;
-    padding: 0;
-    border: 0;
+  word-wrap: break-word;
+  height: fit-content;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 #d_post > div > p > form > textarea {
-    word-wrap: break-word;
-    height: fit-content;
-    min-height: 100px;
+  word-wrap: break-word;
+  height: fit-content;
+  min-height: 100px;
 
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 #d_post > div > p > form > input {
-    padding: 2px;
-    top: 0;
-    position: relative;
+  padding: 2px;
+  top: 0;
+  position: relative;
 }
 
-#follow, #following {
-    width: 100px;
-    height: fit-content;
-    border-radius: 5px 25px;
-    display: none;
+#follow,
+#following {
+  width: 100px;
+  height: fit-content;
+  border-radius: 5px 25px;
+  display: none;
 }
 
 #pg {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    color: black;
-    font-weight: bold;
-    background-color: lightgrey;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  color: black;
+  font-weight: bold;
+  background-color: lightgrey;
 }
 
 #pagination > li > a {
-    font-weight: bold;
-    margin-bottom: 25px;
-    background-color: lightgray;
-
+  font-weight: bold;
+  margin-bottom: 25px;
+  background-color: lightgray;
 }
 
 #pagination > li > a:hover {
-    background-color:darkgrey;
-
+  background-color: darkgrey;
 }
