@@ -5,11 +5,13 @@ from django.db import models
 class User(AbstractUser):
     pass
 
+
 class Post(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     text = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     like = models.IntegerField(default=0)
+
     def serialize(self):
         return {
             "id": self.id,
@@ -18,13 +20,17 @@ class Post(models.Model):
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
             "like": self.like,
         }
-        
+
+
 class Follow(models.Model):
-    followed = models.ForeignKey("User", on_delete=models.CASCADE, related_name = "follow")
-    follower = models.ForeignKey("User", on_delete=models.CASCADE, related_name = "follower")
+    followed = models.ForeignKey(
+        "User", on_delete=models.CASCADE, related_name="follow"
+    )
+    follower = models.ForeignKey(
+        "User", on_delete=models.CASCADE, related_name="follower"
+    )
+
 
 class Post_Like(models.Model):
     post = models.ForeignKey("Post", on_delete=models.CASCADE)
     user = models.ForeignKey("User", on_delete=models.CASCADE)
-
-    

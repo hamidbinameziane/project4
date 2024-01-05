@@ -20,7 +20,6 @@ def index(request):
 
 def login_view(request):
     if request.method == "POST":
-
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
@@ -31,9 +30,11 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
         else:
-            return render(request, "network/login.html", {
-                "message": "Invalid username and/or password."
-            })
+            return render(
+                request,
+                "network/login.html",
+                {"message": "Invalid username and/or password."},
+            )
     else:
         return render(request, "network/login.html")
 
@@ -52,80 +53,80 @@ def register(request):
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
-            return render(request, "network/register.html", {
-                "message": "Passwords must match."
-            })
+            return render(
+                request, "network/register.html", {"message": "Passwords must match."}
+            )
 
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
-            return render(request, "network/register.html", {
-                "message": "Username already taken."
-            })
+            return render(
+                request, "network/register.html", {"message": "Username already taken."}
+            )
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
-    
-    
+
+
 @csrf_exempt
 @login_required
 def n_post(request):
-
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
     data = json.loads(request.body)
     post = data.get("text", "")
     if post == "":
-        return JsonResponse({
-            "error": "There is nothing to post."
-        }, status=400)
-    new_post = Post(
-        user = request.user,
-        text = post
-    )
+        return JsonResponse({"error": "There is nothing to post."}, status=400)
+    new_post = Post(user=request.user, text=post)
     new_post.save()
     return JsonResponse({"message": "Posted successfully."}, status=201)
+
 
 def a_user(request):
     if request.user.is_authenticated:
         au_user = str(request.user)
-            
-        
+
     else:
-        au_user = 'not_aut'
-        
+        au_user = "not_aut"
+
     return JsonResponse({"au_user": au_user}, status=201)
+
 
 def profile(request, username):
     follower_c = Follow.objects.filter(followed__username=username).count()
     following_c = Follow.objects.filter(follower__username=username).count()
     print(following_c)
-    return render(request, "network/profile.html", {
-        "follower": follower_c,
-        "following": following_c,
-        "p_name": username,
-    })
-@csrf_exempt  
+    return render(
+        request,
+        "network/profile.html",
+        {
+            "follower": follower_c,
+            "following": following_c,
+            "p_name": username,
+        },
+    )
+
+
+@csrf_exempt
 @login_required
 def p_follow(request):
-    
     data = json.loads(request.body)
     flrs = Follow.objects.filter(followed__username=data["followed"])
     for i in flrs:
         if request.user == i.follower:
-            f = Follow.objects.get(followed__username=data["followed"], follower__username=request.user)
+            f = Follow.objects.get(
+                followed__username=data["followed"], follower__username=request.user
+            )
             f.delete()
             return HttpResponse(status=204)
     fld = User.objects.get(username=data["followed"])
-    new_f = Follow(
-       followed=  fld,
-       follower = request.user
-    )
+    new_f = Follow(followed=fld, follower=request.user)
     new_f.save()
     return HttpResponse(status=204)
+
 
 @login_required
 def is_following(request, username):
@@ -134,45 +135,45 @@ def is_following(request, username):
     flrs = Follow.objects.filter(followed__username=username)
     for i in flrs:
         if request.user == i.follower:
-            stat = 'Following'
-            return JsonResponse({
-                    "stat": stat,
-                    "follower_c": follower_c,
-                    "following_c": following_c
-                    } , safe=False)
-    stat = 'Follow' 
-    return JsonResponse({
-                    "stat": stat,
-                    "follower_c": follower_c,
-                    "following_c": following_c
-                    } , status=201)
-        
+            stat = "Following"
+            return JsonResponse(
+                {"stat": stat, "follower_c": follower_c, "following_c": following_c},
+                safe=False,
+            )
+    stat = "Follow"
+    return JsonResponse(
+        {"stat": stat, "follower_c": follower_c, "following_c": following_c}, status=201
+    )
+
+
 @login_required
 def following_p(request):
     return render(request, "network/following_p.html")
+
+
 ####
 def d_post(request):
     posts = Post.objects.all().order_by("-timestamp")
-    
+
     qry = request.GET.get("q")
     p_name = request.GET.get("n")
     prof = request.GET.get("p")
     p_p = Post.objects.filter(user__username=p_name).order_by("-timestamp")
-    if qry == 'count':
+    if qry == "count":
         c = posts.count()
         return JsonResponse({"count": c}, status=201)
-    elif qry == 'count_p':
+    elif qry == "count_p":
         p_c = p_p.count()
         return JsonResponse({"count": p_c}, status=201)
-    elif qry == 'all':
+    elif qry == "all":
         return JsonResponse([post.serialize() for post in posts], safe=False)
-    elif qry == 'all_p':
+    elif qry == "all_p":
         return JsonResponse([post.serialize() for post in p_p], safe=False)
-    elif prof == 'p':
+    elif prof == "p":
         paginator = Paginator(p_p, 10)
         p_po = paginator.get_page(int(qry))
         return JsonResponse([post.serialize() for post in p_po], safe=False)
-    
+
     else:
         paginator = Paginator(posts, 10)
         posts_p = paginator.get_page(int(qry))
@@ -187,17 +188,18 @@ def f_posts(request):
         f.append(flw.followed)
     posts = Post.objects.filter(user__in=f).order_by("-timestamp")
     qry = request.GET.get("q")
-    if qry == 'count':
+    if qry == "count":
         c = posts.count()
         return JsonResponse({"count": c}, status=201)
-    elif qry == 'all':
+    elif qry == "all":
         return JsonResponse([post.serialize() for post in posts], safe=False)
     else:
         paginator = Paginator(posts, 10)
         posts_p = paginator.get_page(int(qry))
         return JsonResponse([post.serialize() for post in posts_p], safe=False)
-    
-@csrf_exempt  
+
+
+@csrf_exempt
 @login_required
 def e_post(request):
     data = json.loads(request.body)
@@ -207,42 +209,47 @@ def e_post(request):
         post = Post.objects.get(user=request.user, pk=post_id)
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=404)
-    
+
     post.text = e_text
     post.save()
     return HttpResponse(status=204)
-    
+
+
 @csrf_exempt
 @login_required
 def like(request):
-    
     if request.method == "PUT":
         post_id = json.loads(request.body)["post_id"]
         l_count = Post.objects.get(pk=post_id)
         l_c = l_count.like
         print(l_c)
-        is_liked = Post_Like.objects.filter(user__username=request.user, post__id=post_id).exists()
-       
+        is_liked = Post_Like.objects.filter(
+            user__username=request.user, post__id=post_id
+        ).exists()
+
         if is_liked == False:
             p_l = Post.objects.get(pk=post_id)
-            like = Post_Like(post = p_l, user = request.user)
+            like = Post_Like(post=p_l, user=request.user)
             like.save()
-            
+
             l_count.like = l_c + 1
             l_count.save()
-            
+
             return HttpResponse(status=204)
         else:
-            Post_Like.objects.get(user__username=request.user, post__id=post_id).delete()
+            Post_Like.objects.get(
+                user__username=request.user, post__id=post_id
+            ).delete()
             l_count.like = l_c - 1
             l_count.save()
             return HttpResponse(status=204)
     else:
         qry = int(request.GET.get("q"))
-        is_l = Post_Like.objects.filter(user__username=request.user, post__id=qry).exists()
+        is_l = Post_Like.objects.filter(
+            user__username=request.user, post__id=qry
+        ).exists()
         if is_l == True:
-            stat = 'liked'
+            stat = "liked"
         else:
-            stat = 'unliked'
+            stat = "unliked"
         return JsonResponse({"stat": stat}, status=201)
-    

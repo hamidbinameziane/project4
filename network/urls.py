@@ -1,4 +1,3 @@
-
 from django.urls import path
 
 from . import views
@@ -10,8 +9,7 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path("profile/<str:username>", views.profile, name="profile"),
     path("following_p", views.following_p, name="following_p"),
-    
-    #API Routes
+    # API Routes
     path("posts", views.n_post, name="n_post"),
     path("d_posts", views.d_post, name="d_post"),
     path("a_user", views.a_user, name="a_user"),
