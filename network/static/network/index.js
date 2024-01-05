@@ -86,6 +86,9 @@ function pagination() {
 }
 
 function all_posts(q) {
+  if (!localStorage.getItem('pos')) {
+    localStorage.setItem('pos', 0);
+}
     var aut_user = ''
     var is_textarea = false
       var hist = {}
@@ -154,6 +157,7 @@ function all_posts(q) {
         texedit.append(tex_in)
         console.log(tex.innerHTML)
         texedit.onsubmit = function(){
+          localStorage.setItem('pos', document.documentElement.scrollTop)
         e_txt = tex.value
 
           fetch('/e_post', {
@@ -183,10 +187,6 @@ function all_posts(q) {
         p.append(texedit)
         event.preventDefault();
         
-      //  document.querySelector('#d_post').innerHTML = ""
-      //  document.querySelector('#prev').innerHTML = ""
-      //  document.querySelector('#next').innerHTML = ""
-      //  pagination()
       })
       div.append(a)
   
@@ -199,8 +199,6 @@ function all_posts(q) {
       p2.style.marginTop = '30px'
       p2.innerHTML = element.timestamp
       div.append(p2)
-///////////////////
-console.log(aut_user);
 
       span.innerHTML = "thumb_up"
       
@@ -223,6 +221,7 @@ console.log(aut_user);
 
         span.style.cursor = 'pointer'
       span.addEventListener('click', function() {
+        localStorage.setItem('pos', document.documentElement.scrollTop)
         fetch('/like', {
           method: 'PUT',
           body: JSON.stringify({
@@ -246,11 +245,12 @@ console.log(aut_user);
       document.querySelector('#d_post').append(div)
 
     })
+    window.scrollTo(0, localStorage.getItem('pos'))
       })
     }
   
   document.addEventListener('DOMContentLoaded', function() {
-    
+    localStorage.setItem('pos', 0)
       
     pagination()
     fetch('/a_user')
@@ -258,6 +258,7 @@ console.log(aut_user);
     .then(au_user => {
       if (au_user.au_user != 'not_aut') {
       document.querySelector('#post-form').onsubmit = function(){
+        localStorage.setItem('pos', document.documentElement.scrollTop)
     new_post()
     return false
   };

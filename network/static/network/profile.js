@@ -3,6 +3,7 @@ globalThis.flw = window.location.href.split("/").pop()
 
 function pagination() {
   
+  
   fetch(`/d_posts?q=count_p&n=${flw}`)
   .then(response => response.json())
   .then(count => {
@@ -89,8 +90,13 @@ function pagination() {
 }
 
 function all_posts(q) {
+  if (!localStorage.getItem('pos')) {
+    localStorage.setItem('pos', 0);
+}
 
 
+
+console.log(localStorage.getItem('pos'))
 
   fetch('/a_user')
   .then(response => response.json())
@@ -99,8 +105,8 @@ function all_posts(q) {
     var is_textarea = false
     var hist = {}
     console.log(flw)
-    console.log(au_user.au_user)
     if (au_user.au_user != 'not_aut' && au_user.au_user != flw) {
+      
    fetch(`/is_following/${flw}`)
   .then(response => response.json())
   .then(stat => {
@@ -163,8 +169,6 @@ function all_posts(q) {
       document.getElementById(`${hist['id']}`).innerHTML = hist['in']
       }
       s_id = element.id
-      console.log(is_textarea)
-      console.log(s_id);
     
       const texedit = document.createElement('form');
       const tex = document.createElement('textarea');
@@ -192,6 +196,7 @@ function all_posts(q) {
       texedit.append(tex_in)
       console.log(tex.innerHTML)
       texedit.onsubmit = function(){
+        localStorage.setItem('pos', document.documentElement.scrollTop)
       e_txt = tex.value
 
         fetch('/e_post', {
@@ -252,7 +257,7 @@ function all_posts(q) {
 
       span.style.cursor = 'pointer'
     span.addEventListener('click', function() {
-      
+      localStorage.setItem('pos', document.documentElement.scrollTop)
       fetch('/like', {
         method: 'PUT',
         body: JSON.stringify({
@@ -263,7 +268,6 @@ function all_posts(q) {
         document.querySelector('#d_post').innerHTML = ""
         all_posts(q)
        }, 100)
-      //span.style.color = "#3B71CA"
     })
     })
   }
@@ -273,20 +277,21 @@ function all_posts(q) {
     div.append(span2)
     div.setAttribute('class', 'form-control');
     document.querySelector('#d_post').append(div)
-    console.log(element);
     }
-)
+) 
+window.scrollTo(0, localStorage.getItem('pos'))
     })
 
   })
 
 
-
+ 
   
  
   }
 
 function p_follow() {
+  localStorage.setItem('pos', document.documentElement.scrollTop)
   console.log(flw)
   fetch(`/p_follow`, {
     method: 'PUT',
@@ -305,26 +310,23 @@ function p_follow() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-
+  localStorage.setItem('pos', 0)
 
 fetch('/a_user')
 .then(response => response.json())
 .then(au_user => {
   
-  console.log(flw)
-  console.log(au_user.au_user)
+
   if (au_user.au_user != 'not_aut' && au_user.au_user != flw) {
 document.querySelector('#following').addEventListener('click', () => p_follow());
 document.querySelector('#follow').addEventListener('click', () => p_follow());
 }
-else {
-  document.querySelector('#prev').innerHTML = ""
-  document.querySelector('#next').innerHTML = ""
-  pagination()
-}
+
 })
+document.querySelector('#prev').innerHTML = ""
+  document.querySelector('#next').innerHTML = ""
 
-
+pagination()
 
     
 })
