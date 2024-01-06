@@ -161,13 +161,13 @@ function all_posts(q) {
 document.addEventListener("DOMContentLoaded", function () {
   localStorage.setItem("pos", 0);
   fetch("/a_user")
-  .then((response) => response.json())
-  .then((au_user) => {
-    if (au_user.au_user != "not_aut") {
+    .then((response) => response.json())
+    .then((au_user) => {
+      if (au_user.au_user != "not_aut") {
 
-      document.querySelector('#u_profile').setAttribute("href", `/profile/${au_user.au_user}`);
+        document.querySelector('#u_profile').setAttribute("href", `/profile/${au_user.au_user}`);
 
-    }
-  });
+      }
+    });
   pagination();
 });
