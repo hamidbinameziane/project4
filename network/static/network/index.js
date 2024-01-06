@@ -112,6 +112,7 @@ function all_posts(q) {
           a.innerHTML = "Edit";
 
           a.addEventListener("click", function (event) {
+
             if (is_textarea == true) {
               document.getElementById(`a${hist["id"]}`).style.display = "block";
               document.getElementById("ta").remove();
@@ -134,17 +135,24 @@ function all_posts(q) {
               is_textarea = false;
               event.preventDefault();
             });
+            hist["id"] = s_id;
+            hist["in"] = p.innerHTML;
             texedit.append(c_a);
             texedit.setAttribute("id", "ta");
             tex.setAttribute("class", "form-control");
-            tex.innerHTML = element.post;
+            if (hist["in"]) {
+              tex.innerHTML = hist["in"];
+            }
+            else {
+              tex.innerHTML = element.post
+            }
             texedit.append(tex);
             tex_in.setAttribute("type", "submit");
             tex_in.setAttribute("class", "btn btn-primary");
             tex_in.setAttribute("value", "Save");
             texedit.append(tex_in);
             console.log(tex.innerHTML);
-            texedit.onsubmit = function () {
+            texedit.onsubmit = function (event) {
               localStorage.setItem("pos", document.documentElement.scrollTop);
               e_txt = tex.value;
 
@@ -156,9 +164,18 @@ function all_posts(q) {
                 }),
               });
               setTimeout(() => {
-                div.innerHTML = ""
-                document.querySelector("#d_post").innerHTML = "";
-                all_posts(q);
+                fetch(`/e_post?q=${element.id}`)
+                  .then((response) => response.json())
+                  .then((text) => {
+                    a.style.display = "block";
+                    document.getElementById("ta").remove();
+                    p.innerHTML = text.text
+                    tex.innerHTML = ""
+                    hist["id"] = s_id;
+                    hist["in"] = p.innerHTML;
+                    is_textarea = false;
+                  })
+
               }, 50);
               return false;
             };
@@ -209,9 +226,23 @@ function all_posts(q) {
                   }),
                 });
                 setTimeout(() => {
-                  document.querySelector("#d_post").innerHTML = "";
-                  all_posts(q);
-                }, 100);
+                  //document.querySelector("#d_post").innerHTML = "";
+                  //all_posts(q);
+
+                  fetch(`/like?q=${element.id}`)
+                    .then((response) => response.json())
+                    .then((stat) => {
+                      if (stat.stat == "liked") {
+                        span.style.color = "#3B71CA";
+                      } else {
+                        span.style.color = "gray";
+                      }
+                      span2.innerHTML = stat.l_co;
+                    })
+                }, 50);
+
+
+
               });
             });
         }

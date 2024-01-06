@@ -171,10 +171,20 @@ function all_posts(q) {
                   is_textarea = false;
                   event.preventDefault();
                 });
+
+                hist["id"] = s_id;
+                hist["in"] = p.innerHTML;
+
                 texedit.append(c_a);
                 texedit.setAttribute("id", "ta");
                 tex.setAttribute("class", "form-control");
-                tex.innerHTML = element.post;
+
+                if (hist["in"]) {
+                  tex.innerHTML = hist["in"];
+                }
+                else {
+                  tex.innerHTML = element.post
+                }
                 texedit.append(tex);
                 tex_in.setAttribute("type", "submit");
                 tex_in.setAttribute("class", "btn btn-primary");
@@ -196,8 +206,17 @@ function all_posts(q) {
                     }),
                   });
                   setTimeout(() => {
-                    document.querySelector("#d_post").innerHTML = "";
-                    all_posts(q);
+                    fetch(`/e_post?q=${element.id}`)
+                      .then((response) => response.json())
+                      .then((text) => {
+                        a.style.display = "block";
+                        document.getElementById("ta").remove();
+                        p.innerHTML = text.text
+                        tex.innerHTML = ""
+                        hist["id"] = s_id;
+                        hist["in"] = p.innerHTML;
+                        is_textarea = false;
+                      })
                   }, 50);
                   return false;
                 };
@@ -249,8 +268,18 @@ function all_posts(q) {
                       }),
                     });
                     setTimeout(() => {
-                      document.querySelector("#d_post").innerHTML = "";
-                      all_posts(q);
+                      //document.querySelector("#d_post").innerHTML = "";
+                      //all_posts(q);
+                      fetch(`/like?q=${element.id}`)
+                        .then((response) => response.json())
+                        .then((stat) => {
+                          if (stat.stat == "liked") {
+                            span.style.color = "#3B71CA";
+                          } else {
+                            span.style.color = "gray";
+                          }
+                          span2.innerHTML = stat.l_co;
+                        })
                     }, 100);
                   });
                 });

@@ -200,17 +200,22 @@ def f_posts(request):
 @csrf_exempt
 @login_required
 def e_post(request):
-    data = json.loads(request.body)
-    post_id = int(data.get("id", ""))
-    e_text = str(data.get("text", ""))
-    try:
-        post = Post.objects.get(user=request.user, pk=post_id)
-    except Post.DoesNotExist:
-        return JsonResponse({"error": "Post not found."}, status=404)
+    if request.method == "POST":
+        data = json.loads(request.body)
+        post_id = int(data.get("id", ""))
+        e_text = str(data.get("text", ""))
+        try:
+            post = Post.objects.get(user=request.user, pk=post_id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Post not found."}, status=404)
 
-    post.text = e_text
-    post.save()
-    return HttpResponse(status=204)
+        post.text = e_text
+        post.save()
+        return HttpResponse(status=204)
+    else:
+        qry = int(request.GET.get("q"))
+        txt = Post.objects.get(pk=qry).text
+        return JsonResponse({"text": txt}, status=201)
 
 
 @csrf_exempt
@@ -249,4 +254,5 @@ def like(request):
             stat = "liked"
         else:
             stat = "unliked"
-        return JsonResponse({"stat": stat}, status=201)
+        l_co = Post.objects.get(pk=qry).like
+        return JsonResponse({"stat": stat, "l_co": l_co}, status=201)

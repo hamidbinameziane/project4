@@ -140,8 +140,18 @@ function all_posts(q) {
                       }),
                     });
                     setTimeout(() => {
-                      document.querySelector("#d_post").innerHTML = "";
-                      all_posts(q);
+                      //document.querySelector("#d_post").innerHTML = "";
+                      //all_posts(q);
+                      fetch(`/like?q=${element.id}`)
+                      .then((response) => response.json())
+                      .then((stat) => {
+                        if (stat.stat == "liked") {
+                          span.style.color = "#3B71CA";
+                        } else {
+                          span.style.color = "gray";
+                        }
+                        span2.innerHTML = stat.l_co;
+                      })
                     }, 100);
                   });
                 });
