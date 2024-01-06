@@ -98,7 +98,6 @@ def a_user(request):
 def profile(request, username):
     follower_c = Follow.objects.filter(followed__username=username).count()
     following_c = Follow.objects.filter(follower__username=username).count()
-    print(following_c)
     return render(
         request,
         "network/profile.html",
@@ -151,7 +150,6 @@ def following_p(request):
     return render(request, "network/following_p.html")
 
 
-####
 def d_post(request):
     posts = Post.objects.all().order_by("-timestamp")
 
@@ -222,7 +220,6 @@ def like(request):
         post_id = json.loads(request.body)["post_id"]
         l_count = Post.objects.get(pk=post_id)
         l_c = l_count.like
-        print(l_c)
         is_liked = Post_Like.objects.filter(
             user__username=request.user, post__id=post_id
         ).exists()

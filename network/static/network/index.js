@@ -156,6 +156,7 @@ function all_posts(q) {
                 }),
               });
               setTimeout(() => {
+                div.innerHTML = ""
                 document.querySelector("#d_post").innerHTML = "";
                 all_posts(q);
               }, 50);
@@ -234,6 +235,10 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((response) => response.json())
     .then((au_user) => {
       if (au_user.au_user != "not_aut") {
+
+        document.querySelector('#u_profile').setAttribute("href", `/profile/${au_user.au_user}`);
+
+
         document.querySelector("#post-form").onsubmit = function () {
           localStorage.setItem("pos", document.documentElement.scrollTop);
           new_post();

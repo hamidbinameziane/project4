@@ -83,14 +83,11 @@ function all_posts(q) {
     localStorage.setItem("pos", 0);
   }
 
-  console.log(localStorage.getItem("pos"));
-
   fetch("/a_user")
     .then((response) => response.json())
     .then((au_user) => {
       var is_textarea = false;
       var hist = {};
-      console.log(flw);
       if (au_user.au_user != "not_aut" && au_user.au_user != flw) {
         fetch(`/is_following/${flw}`)
           .then((response) => response.json())
@@ -301,6 +298,10 @@ document.addEventListener("DOMContentLoaded", function () {
         document
           .querySelector("#follow")
           .addEventListener("click", () => p_follow());
+      }
+      if (au_user.au_user != "not_aut") {
+
+        document.querySelector('#u_profile').setAttribute("href", `/profile/${au_user.au_user}`);
       }
     });
   document.querySelector("#prev").innerHTML = "";
