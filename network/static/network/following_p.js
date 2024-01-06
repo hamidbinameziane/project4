@@ -28,7 +28,7 @@ function pagination() {
         a_f.className = "page-link";
         a_f.innerHTML = "Previous";
         a_f.addEventListener("click", function () {
-          localStorage.setItem("pos", 0);
+
           last_p--;
           document.querySelector(
             "#pg"
@@ -55,7 +55,7 @@ function pagination() {
         a_l.className = "page-link";
         a_l.innerHTML = "Next";
         a_l.addEventListener("click", function () {
-          localStorage.setItem("pos", 0);
+        
           last_p++;
           document.querySelector(
             "#pg"
@@ -84,9 +84,7 @@ function pagination() {
 }
 
 function all_posts(q) {
-  if (!localStorage.getItem("pos")) {
-    localStorage.setItem("pos", 0);
-  }
+
   fetch("/a_user")
     .then((response) => response.json())
     .then((au_user) => {
@@ -129,10 +127,7 @@ function all_posts(q) {
 
                   span.style.cursor = "pointer";
                   span.addEventListener("click", function () {
-                    localStorage.setItem(
-                      "pos",
-                      document.documentElement.scrollTop
-                    );
+                  
                     fetch("/like", {
                       method: "PUT",
                       body: JSON.stringify({
@@ -163,13 +158,13 @@ function all_posts(q) {
             div.setAttribute("class", "form-control");
             document.querySelector("#d_post").append(div);
           });
-          window.scrollTo(0, localStorage.getItem("pos"));
+          
         });
     });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  localStorage.setItem("pos", 0);
+  
   fetch("/a_user")
     .then((response) => response.json())
     .then((au_user) => {

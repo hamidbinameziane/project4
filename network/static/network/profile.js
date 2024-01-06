@@ -27,7 +27,6 @@ function pagination() {
         a_f.className = "page-link";
         a_f.innerHTML = "Previous";
         a_f.addEventListener("click", function () {
-          localStorage.setItem("pos", 0);
           last_p--;
           document.querySelector(
             "#pg"
@@ -52,7 +51,6 @@ function pagination() {
         a_l.className = "page-link";
         a_l.innerHTML = "Next";
         a_l.addEventListener("click", function () {
-          localStorage.setItem("pos", 0);
           last_p++;
           document.querySelector(
             "#pg"
@@ -79,9 +77,6 @@ function pagination() {
 }
 
 function all_posts(q) {
-  if (!localStorage.getItem("pos")) {
-    localStorage.setItem("pos", 0);
-  }
 
   fetch("/a_user")
     .then((response) => response.json())
@@ -192,10 +187,6 @@ function all_posts(q) {
                 texedit.append(tex_in);
                 console.log(tex.innerHTML);
                 texedit.onsubmit = function () {
-                  localStorage.setItem(
-                    "pos",
-                    document.documentElement.scrollTop
-                  );
                   e_txt = tex.value;
 
                   fetch("/e_post", {
@@ -257,10 +248,6 @@ function all_posts(q) {
 
                   span.style.cursor = "pointer";
                   span.addEventListener("click", function () {
-                    localStorage.setItem(
-                      "pos",
-                      document.documentElement.scrollTop
-                    );
                     fetch("/like", {
                       method: "PUT",
                       body: JSON.stringify({
@@ -268,8 +255,7 @@ function all_posts(q) {
                       }),
                     });
                     setTimeout(() => {
-                      //document.querySelector("#d_post").innerHTML = "";
-                      //all_posts(q);
+
                       fetch(`/like?q=${element.id}`)
                         .then((response) => response.json())
                         .then((stat) => {
@@ -291,13 +277,11 @@ function all_posts(q) {
             div.setAttribute("class", "form-control");
             document.querySelector("#d_post").append(div);
           });
-          window.scrollTo(0, localStorage.getItem("pos"));
         });
     });
 }
 
 function p_follow() {
-  localStorage.setItem("pos", document.documentElement.scrollTop);
   console.log(flw);
   fetch(`/p_follow`, {
     method: "PUT",
@@ -306,16 +290,43 @@ function p_follow() {
     }),
   });
   setTimeout(() => {
-    document.querySelector("#d_post").innerHTML = "";
-    document.querySelector("#prev").innerHTML = "";
-    document.querySelector("#next").innerHTML = "";
+    fetch(`/is_following/${flw}`)
+    .then((response) => response.json())
+    .then((stat) => {
+      document.querySelector("#follow").innerHTML = stat.stat;
+      if (stat.stat == "Following") {
+        document.querySelector("#follow").style.display = "none";
+        document.querySelector("#following").style.display = "block";
 
-    pagination();
+        document
+          .querySelector("#following")
+          .addEventListener("mouseover", () => {
+            document
+              .querySelector("#following")
+              .setAttribute("class", "btn btn-danger");
+            document.querySelector("#following").innerHTML = "Unfollow";
+          });
+        document
+          .querySelector("#following")
+          .addEventListener("mouseout", () => {
+            document
+              .querySelector("#following")
+              .setAttribute("class", "btn btn-secondary");
+            document.querySelector("#following").innerHTML = stat.stat;
+          });
+      } else {
+        document.querySelector("#following").style.display = "none";
+        document.querySelector("#follow").style.display = "block";
+        document.querySelector("#follow").innerHTML = stat.stat;
+      }
+      document.querySelector("#fg_c").innerHTML = stat.following_c;
+
+      document.querySelector("#fr_c").innerHTML = stat.follower_c;
+    });
   }, 50);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  localStorage.setItem("pos", 0);
 
   fetch("/a_user")
     .then((response) => response.json())
