@@ -78,6 +78,7 @@ function all_posts(q) {
   var aut_user = "";
   var is_textarea = false;
   var hist = {};
+  var delay = 0;
   fetch("/a_user")
     .then((response) => response.json())
     .then((au_user) => {
@@ -87,12 +88,14 @@ function all_posts(q) {
     .then((response) => response.json())
     .then((posts) => {
       posts.forEach((element) => {
+        setTimeout(() => {
+
         const div = document.createElement("div");
         const a2 = document.createElement("a");
         const h4 = document.createElement("h4");
         const p = document.createElement("p");
         const p2 = document.createElement("p");
-        const span = document.createElement("span");
+        const i = document.createElement("i");
         const span2 = document.createElement("span");
         a2.setAttribute("href", `/profile/${element.user}`);
         a2.style.color = "black";
@@ -197,22 +200,22 @@ function all_posts(q) {
         p2.innerHTML = element.timestamp;
         div.append(p2);
 
-        span.innerHTML = "thumb_up";
+        //span.innerHTML = "thumb_up";
 
-        span.setAttribute("class", "material-symbols-outlined");
+        i.setAttribute("class", "bi bi-heart-fill");
 
         if (aut_user != "not_aut") {
           fetch(`/like?q=${element.id}`)
             .then((response) => response.json())
             .then((stat) => {
               if (stat.stat == "liked") {
-                span.style.color = "#3B71CA";
+                i.style.color = "red";
               } else {
-                span.style.color = "gray";
+                i.style.color = "gray";
               }
 
-              span.style.cursor = "pointer";
-              span.addEventListener("click", function () {
+              i.style.cursor = "pointer";
+              i.addEventListener("click", function () {
                
                 fetch("/like", {
                   method: "PUT",
@@ -228,12 +231,13 @@ function all_posts(q) {
                     .then((response) => response.json())
                     .then((stat) => {
                       if (stat.stat == "liked") {
-                        span.style.color = "#3B71CA";
+                        i.style.color = "red";
                       } else {
-                        span.style.color = "gray";
+                        i.style.color = "gray";
                       }
                       span2.innerHTML = stat.l_co;
                     })
+                    
                 }, 50);
 
 
@@ -242,14 +246,18 @@ function all_posts(q) {
             });
         }
 
-        div.append(span);
+        div.append(i);
         span2.innerHTML = element.like;
         span2.style.padding = "5px";
         div.append(span2);
         div.setAttribute("class", "form-control");
+        
         document.querySelector("#d_post").append(div);
+        
+      }, 250 + delay);
+      delay += 250
       });
-      
+       
     });
 }
 

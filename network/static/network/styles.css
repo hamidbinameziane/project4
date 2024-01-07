@@ -62,3 +62,20 @@
 #pagination > li > a:hover {
   background-color: darkgrey;
 }
+
+@keyframes move {
+  from {
+      right: 100%;
+  }
+  to {
+      right: 0%;
+  }
+}
+
+
+#d_post > div {
+  position: relative;
+  animation-name: move;
+  animation-duration: 0.5s;
+  animation-fill-mode:forwards;
+}
