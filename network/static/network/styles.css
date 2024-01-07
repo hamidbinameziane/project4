@@ -65,17 +65,16 @@
 
 @keyframes move {
   from {
-      right: 100%;
+    right: 100%;
   }
   to {
-      right: 0%;
+    right: 0%;
   }
 }
-
 
 #d_post > div {
   position: relative;
   animation-name: move;
   animation-duration: 0.5s;
-  animation-fill-mode:forwards;
+  animation-fill-mode: forwards;
 }

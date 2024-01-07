@@ -90,179 +90,174 @@ function all_posts(q) {
       posts.forEach((element) => {
         setTimeout(() => {
 
-        const div = document.createElement("div");
-        const a2 = document.createElement("a");
-        const h4 = document.createElement("h4");
-        const p = document.createElement("p");
-        const p2 = document.createElement("p");
-        const i = document.createElement("i");
-        const span2 = document.createElement("span");
-        a2.setAttribute("href", `/profile/${element.user}`);
-        a2.style.color = "black";
-        h4.innerHTML = element.user;
-        a2.append(h4);
-        div.append(a2);
-        if (aut_user == element.user) {
-          const a = document.createElement("a");
-          a.setAttribute("href", "");
-          a.setAttribute("class", "link-primary");
-          a.style.fontWeight = "bold";
-          a.innerHTML = "Edit";
+          const div = document.createElement("div");
+          const a2 = document.createElement("a");
+          const h4 = document.createElement("h4");
+          const p = document.createElement("p");
+          const p2 = document.createElement("p");
+          const i = document.createElement("i");
+          const span2 = document.createElement("span");
+          a2.setAttribute("href", `/profile/${element.user}`);
+          a2.style.color = "black";
+          h4.innerHTML = element.user;
+          a2.append(h4);
+          div.append(a2);
+          if (aut_user == element.user) {
+            const a = document.createElement("a");
+            a.setAttribute("href", "");
+            a.setAttribute("class", "link-primary");
+            a.style.fontWeight = "bold";
+            a.innerHTML = "Edit";
 
-          a.addEventListener("click", function (event) {
+            a.addEventListener("click", function (event) {
 
-            if (is_textarea == true) {
-              document.getElementById(`a${hist["id"]}`).style.display = "block";
-              document.getElementById("ta").remove();
-              document.getElementById(`${hist["id"]}`).innerHTML = hist["in"];
-            }
-            s_id = element.id;
-
-            const texedit = document.createElement("form");
-            const tex = document.createElement("textarea");
-            const tex_in = document.createElement("input");
-            const c_a = document.createElement("a");
-            c_a.setAttribute("href", "");
-            c_a.setAttribute("class", "link-primary");
-            c_a.style.fontWeight = "bold";
-            c_a.innerHTML = "Cancel";
-            c_a.addEventListener("click", function (event) {
-              document.getElementById(`a${hist["id"]}`).style.display = "block";
-              document.getElementById("ta").remove();
-              document.getElementById(`${hist["id"]}`).innerHTML = hist["in"];
-              is_textarea = false;
-              event.preventDefault();
-            });
-            hist["id"] = s_id;
-            hist["in"] = p.innerHTML;
-            texedit.append(c_a);
-            texedit.setAttribute("id", "ta");
-            tex.setAttribute("class", "form-control");
-            if (hist["in"]) {
-              tex.innerHTML = hist["in"];
-            }
-            else {
-              tex.innerHTML = element.post
-            }
-            texedit.append(tex);
-            tex_in.setAttribute("type", "submit");
-            tex_in.setAttribute("class", "btn btn-primary");
-            tex_in.setAttribute("value", "Save");
-            texedit.append(tex_in);
-            console.log(tex.innerHTML);
-            texedit.onsubmit = function (event) {
-             
-              e_txt = tex.value;
-
-              fetch("/e_post", {
-                method: "POST",
-                body: JSON.stringify({
-                  text: e_txt,
-                  id: element.id,
-                }),
-              });
-              setTimeout(() => {
-                fetch(`/e_post?q=${element.id}`)
-                  .then((response) => response.json())
-                  .then((text) => {
-                    a.style.display = "block";
-                    document.getElementById("ta").remove();
-                    p.innerHTML = text.text
-                    tex.innerHTML = ""
-                    hist["id"] = s_id;
-                    hist["in"] = p.innerHTML;
-                    is_textarea = false;
-                  })
-
-              }, 50);
-              return false;
-            };
-
-            a.setAttribute("id", `a${s_id}`);
-            a.style.display = "none";
-            p.setAttribute("id", `${s_id}`);
-            hist["id"] = s_id;
-            hist["in"] = p.innerHTML;
-            is_textarea = true;
-            p.innerHTML = "";
-
-            p.append(texedit);
-            event.preventDefault();
-          });
-          div.append(a);
-        }
-        p.setAttribute("class", "form-control");
-        p.innerHTML = element.post;
-        div.append(p);
-
-        p2.setAttribute("class", "text-muted");
-        p2.style.marginTop = "30px";
-        p2.innerHTML = element.timestamp;
-        div.append(p2);
-
-        //span.innerHTML = "thumb_up";
-
-        i.setAttribute("class", "bi bi-heart-fill");
-
-        if (aut_user != "not_aut") {
-          fetch(`/like?q=${element.id}`)
-            .then((response) => response.json())
-            .then((stat) => {
-              if (stat.stat == "liked") {
-                i.style.color = "red";
-              } else {
-                i.style.color = "gray";
+              if (is_textarea == true) {
+                document.getElementById(`a${hist["id"]}`).style.display = "block";
+                document.getElementById("ta").remove();
+                document.getElementById(`${hist["id"]}`).innerHTML = hist["in"];
               }
+              s_id = element.id;
 
-              i.style.cursor = "pointer";
-              i.addEventListener("click", function () {
-               
-                fetch("/like", {
-                  method: "PUT",
+              const texedit = document.createElement("form");
+              const tex = document.createElement("textarea");
+              const tex_in = document.createElement("input");
+              const c_a = document.createElement("a");
+              c_a.setAttribute("href", "");
+              c_a.setAttribute("class", "link-primary");
+              c_a.style.fontWeight = "bold";
+              c_a.innerHTML = "Cancel";
+              c_a.addEventListener("click", function (event) {
+                document.getElementById(`a${hist["id"]}`).style.display = "block";
+                document.getElementById("ta").remove();
+                document.getElementById(`${hist["id"]}`).innerHTML = hist["in"];
+                is_textarea = false;
+                event.preventDefault();
+              });
+              hist["id"] = s_id;
+              hist["in"] = p.innerHTML;
+              texedit.append(c_a);
+              texedit.setAttribute("id", "ta");
+              tex.setAttribute("class", "form-control");
+              if (hist["in"]) {
+                tex.innerHTML = hist["in"];
+              }
+              else {
+                tex.innerHTML = element.post
+              }
+              texedit.append(tex);
+              tex_in.setAttribute("type", "submit");
+              tex_in.setAttribute("class", "btn btn-primary");
+              tex_in.setAttribute("value", "Save");
+              texedit.append(tex_in);
+              texedit.onsubmit = function (event) {
+
+                e_txt = tex.value;
+
+                fetch("/e_post", {
+                  method: "POST",
                   body: JSON.stringify({
-                    post_id: element.id,
+                    text: e_txt,
+                    id: element.id,
                   }),
                 });
                 setTimeout(() => {
-                  //document.querySelector("#d_post").innerHTML = "";
-                  //all_posts(q);
-
-                  fetch(`/like?q=${element.id}`)
+                  fetch(`/e_post?q=${element.id}`)
                     .then((response) => response.json())
-                    .then((stat) => {
-                      if (stat.stat == "liked") {
-                        i.style.color = "red";
-                      } else {
-                        i.style.color = "gray";
-                      }
-                      span2.innerHTML = stat.l_co;
+                    .then((text) => {
+                      a.style.display = "block";
+                      document.getElementById("ta").remove();
+                      p.innerHTML = text.text
+                      tex.innerHTML = ""
+                      hist["id"] = s_id;
+                      hist["in"] = p.innerHTML;
+                      is_textarea = false;
                     })
-                    
+
                 }, 50);
+                return false;
+              };
 
+              a.setAttribute("id", `a${s_id}`);
+              a.style.display = "none";
+              p.setAttribute("id", `${s_id}`);
+              hist["id"] = s_id;
+              hist["in"] = p.innerHTML;
+              is_textarea = true;
+              p.innerHTML = "";
 
-
-              });
+              p.append(texedit);
+              event.preventDefault();
             });
-        }
+            div.append(a);
+          }
+          p.setAttribute("class", "form-control");
+          p.innerHTML = element.post;
+          div.append(p);
 
-        div.append(i);
-        span2.innerHTML = element.like;
-        span2.style.padding = "5px";
-        div.append(span2);
-        div.setAttribute("class", "form-control");
-        
-        document.querySelector("#d_post").append(div);
-        
-      }, 250 + delay);
-      delay += 250
+          p2.setAttribute("class", "text-muted");
+          p2.style.marginTop = "30px";
+          p2.innerHTML = element.timestamp;
+          div.append(p2);
+
+          i.setAttribute("class", "bi bi-heart-fill");
+
+          if (aut_user != "not_aut") {
+            fetch(`/like?q=${element.id}`)
+              .then((response) => response.json())
+              .then((stat) => {
+                if (stat.stat == "liked") {
+                  i.style.color = "red";
+                } else {
+                  i.style.color = "gray";
+                }
+
+                i.style.cursor = "pointer";
+                i.addEventListener("click", function () {
+
+                  fetch("/like", {
+                    method: "PUT",
+                    body: JSON.stringify({
+                      post_id: element.id,
+                    }),
+                  });
+                  setTimeout(() => {
+
+                    fetch(`/like?q=${element.id}`)
+                      .then((response) => response.json())
+                      .then((stat) => {
+                        if (stat.stat == "liked") {
+                          i.style.color = "red";
+                        } else {
+                          i.style.color = "gray";
+                        }
+                        span2.innerHTML = stat.l_co;
+                      })
+
+                  }, 50);
+
+
+
+                });
+              });
+          }
+
+          div.append(i);
+          span2.innerHTML = element.like;
+          span2.style.padding = "5px";
+          div.append(span2);
+          div.setAttribute("class", "form-control");
+
+          document.querySelector("#d_post").append(div);
+
+        }, 250 + delay);
+        delay += 250
       });
-       
+
     });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  
+
 
   pagination();
   fetch("/a_user")
@@ -274,7 +269,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         document.querySelector("#post-form").onsubmit = function () {
-         
+
           new_post();
           return false;
         };
